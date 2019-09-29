@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_doubanmovie/HotWidget.dart';
-import 'package:flutter_doubanmovie/MineWidget.dart';
-import 'package:flutter_doubanmovie/MoviesWidget.dart';
+import 'package:flutter_doubanmovie/hot/HotWidget.dart';
+import 'package:flutter_doubanmovie/mine/MineWidget.dart';
+import 'package:flutter_doubanmovie/find/MoviesWidget.dart';
 
 void main() => runApp(MyApp());
 
