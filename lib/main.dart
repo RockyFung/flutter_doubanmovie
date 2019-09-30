@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_doubanmovie/hot/CitysWidget.dart';
 import 'package:flutter_doubanmovie/hot/HotWidget.dart';
 import 'package:flutter_doubanmovie/mine/MineWidget.dart';
 import 'package:flutter_doubanmovie/find/MoviesWidget.dart';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: '豆瓣电影'),
+      routes: {
+        '/Citys':(context)=>CitysWidget()
+      },
     );
   }
 }
@@ -30,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   int _selectedIndex = 0;
   final _widgetItems = [HotWidget(), MoviesWidget(), MineWidget()];
 

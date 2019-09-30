@@ -1,7 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_doubanmovie/hot/HotMovieData.dart';
 import 'package:flutter_doubanmovie/hot/HotMovieItemWidget.dart';
+import 'package:http/http.dart' as http;
+
 class HotMoviesListWidget extends StatefulWidget{
+  
+  String curCity;
+  HotMoviesListWidget(String city){
+    curCity = city;
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -10,30 +19,45 @@ class HotMoviesListWidget extends StatefulWidget{
   }
 }
 
-class HotMoviesListWidgetState extends State<HotMoviesListWidget>{
+class HotMoviesListWidgetState extends State<HotMoviesListWidget> with AutomaticKeepAliveClientMixin{
+  
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true; //返回 true，表示不会被回收
   // 数据容器
   List<HotMovieData> hotMovies = new List<HotMovieData>();
-
 
   @override
   void initState() {
     super.initState();
-    var data = HotMovieData('反贪风暴4', 6.3, '林德禄', '古天乐/郑嘉颖/林峯', 29013,
-        'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2551353482.webp');
+    _getData();
+  }
 
-    setState(() {
-      hotMovies.add(data);
-      hotMovies.add(data);
-      hotMovies.add(data);
-      hotMovies.add(data);
-      hotMovies.add(data);
-      hotMovies.add(data);
-    });
-    
+  void _getData()async{
+    List<HotMovieData> serverDataList = new List();
+    var response = await http.get(
+        'https://api.douban.com/v2/movie/in_theaters?apikey=0b2bdeda43b5688921839c8ecb20399b&city='+widget.curCity+'&start=0&count=10&client=&udid=');
+    //成功获取数据
+    if (response.statusCode == 200) {
+      var responseJson = json.decode(response.body);
+      for (dynamic data in responseJson['subjects']) {
+        HotMovieData hotMovieData = HotMovieData.fromJson(data);
+        serverDataList.add(hotMovieData);
+      }
+      setState(() {
+        hotMovies = serverDataList;
+      });
+    } 
   }
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    // TODO: implement build
+    if (hotMovies == null || hotMovies.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return ListView.separated(
       itemCount: hotMovies.length,
       itemBuilder: (context, index){
         return HotMovieItemWidget(hotMovies[index]);
@@ -45,5 +69,17 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget>{
         );
       },
     );
+    }
+    
+  }
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+  @override
+  void didUpdateWidget(HotMoviesListWidget oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
   }
 }

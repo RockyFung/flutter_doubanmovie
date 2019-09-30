@@ -3,7 +3,7 @@ import 'package:flutter_doubanmovie/hot/HotMovieData.dart';
 class HotMovieItemWidget extends StatefulWidget{
   HotMovieData hotMovieData;
   HotMovieItemWidget(this.hotMovieData);
-
+  
   @override
   State<StatefulWidget> createState() {
     return HotMovieItemWidgetState();
@@ -11,9 +11,6 @@ class HotMovieItemWidget extends StatefulWidget{
 }
 
 class HotMovieItemWidgetState extends State<HotMovieItemWidget>{
-  
-
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -25,7 +22,7 @@ class HotMovieItemWidgetState extends State<HotMovieItemWidget>{
         children: <Widget>[
           // 左边的图片
           Image.network(
-            widget.hotMovieData.images,
+            widget.hotMovieData.images.small,
             width: 80,
             height: 120,
             fit: BoxFit.cover,
@@ -45,16 +42,21 @@ class HotMovieItemWidgetState extends State<HotMovieItemWidget>{
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    widget.hotMovieData.rating.toString(),
+                    widget.hotMovieData.rating.average.toString(),
                     style: TextStyle(fontSize: 14, color: Colors.black54),
                   ),
                   Text(
-                    '导演：' + widget.hotMovieData.directors,
+                    '导演：' + widget.hotMovieData.getDirectors(),
                     style: TextStyle(fontSize: 14, color: Colors.black54),
+                    overflow: TextOverflow.fade,
                   ),
-                  Text(
-                    '主演：' + widget.hotMovieData.casts,
+                  // 因为Text没有定义宽度，要在外层包裹Expanded变成弹性盒子，overflow才有效果
+                  Expanded(
+                    child: Text(
+                    '主演：' + widget.hotMovieData.getCasts(),
                     style: TextStyle(fontSize: 14, color: Colors.black54),
+                    overflow: TextOverflow.fade, 
+                  ),
                   )
                 ],
               ),
@@ -67,7 +69,7 @@ class HotMovieItemWidgetState extends State<HotMovieItemWidget>{
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  widget.hotMovieData.watchedPeople.toString()+'人看过',
+                  widget.hotMovieData.collectCount.toString()+'人看过',
                   style: TextStyle(color: Colors.red,fontSize: 14),
                 ),
                 OutlineButton(

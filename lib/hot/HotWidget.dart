@@ -10,6 +10,19 @@ class HotWidget extends StatefulWidget{
 }
 
 class HotWidgetState extends State<HotWidget>{
+  //  当前城市
+  String curCity = '上海';
+
+  void _jump2CitysWidget() async{
+    var selectCity = await Navigator.pushNamed(context, '/Citys', arguments: curCity);
+    if (selectCity == null){
+      return;
+    }
+    setState(() {
+      curCity = selectCity;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -24,7 +37,12 @@ class HotWidgetState extends State<HotWidget>{
           child: Row(
             children: <Widget>[
               //  搜索页面
-            Text('上海',style: TextStyle(fontSize: 16),),
+            GestureDetector(
+              child: Text(curCity,style: TextStyle(fontSize: 16),),
+              onTap: (){
+                _jump2CitysWidget();
+              },
+            ),
             Icon(Icons.arrow_drop_down),
             Expanded(
               flex: 1,
@@ -69,7 +87,7 @@ class HotWidgetState extends State<HotWidget>{
               Expanded(
                 child: Container(
                   child: TabBarView(children: <Widget>[
-                    HotMoviesListWidget(),
+                    HotMoviesListWidget(curCity),
                     Center(child: Text('即将上映'),)
                   ],),),
               )
@@ -80,4 +98,5 @@ class HotWidgetState extends State<HotWidget>{
     ],)
     );
   }
+
 }
