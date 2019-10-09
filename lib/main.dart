@@ -11,6 +11,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
+      // showPerformanceOverlay: true, // 打开性能监控工具
+      // checkerboardOffscreenLayers: true, //使用了saveLayer的图像会显示为棋盘格式并随着页面刷新而闪烁
+      // checkerboardRasterCacheImages: true, // 做了缓存的静态图像图片在刷新页面使不会改变棋盘格的颜色；如果棋盘格颜色变了，说明被重新缓存，这是我们要避免的
       title: 'Flutter Demo',
       theme: ThemeData(
 

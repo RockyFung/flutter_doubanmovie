@@ -72,14 +72,24 @@ class HotMoviesListWidgetState extends State<HotMoviesListWidget> with Automatic
     }
     
   }
+
+  // 方法会在它依赖的数据发生变化的时候调用
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+    
   }
   @override
   void didUpdateWidget(HotMoviesListWidget oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.curCity != widget.curCity) {
+      // loading
+      // setState(() {
+      //   hotMovies = [];
+      // });
+      _getData();
+    }
   }
 }

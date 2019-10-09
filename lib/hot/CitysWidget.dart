@@ -126,6 +126,7 @@ class CitysWidgetState extends State<CitysWidget>{
                                 color: Colors.white,
                                 elevation: 0,
                                 onPressed: (){
+                                  // 返回并回传值
                                   Navigator.pop(context, hotCitys[index]);
                                 },
                               );

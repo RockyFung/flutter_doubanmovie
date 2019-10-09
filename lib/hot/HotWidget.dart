@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_doubanmovie/hot/HotMoviesListWidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HotWidget extends StatefulWidget{
   @override
@@ -11,7 +12,28 @@ class HotWidget extends StatefulWidget{
 
 class HotWidgetState extends State<HotWidget>{
   //  当前城市
-  String curCity = '上海';
+  String curCity;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initData();
+  }
+
+  void initData() async{
+    final prefs = await SharedPreferences.getInstance();
+    String city = prefs.getString('curCity');
+    if (city != null && city.isNotEmpty) {
+      setState((){
+        curCity = city;
+      });
+    } else {
+      setState((){
+        curCity = '上海';
+      });
+    }
+  }
 
   void _jump2CitysWidget() async{
     var selectCity = await Navigator.pushNamed(context, '/Citys', arguments: curCity);
@@ -21,11 +43,21 @@ class HotWidgetState extends State<HotWidget>{
     setState(() {
       curCity = selectCity;
     });
+    
+    // 保存数据
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('curCity', selectCity);
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    if (curCity == null || curCity.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return SafeArea(
       child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
