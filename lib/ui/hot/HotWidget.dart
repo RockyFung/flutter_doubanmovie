@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_doubanmovie/hot/HotMoviesListWidget.dart';
+import 'package:flutter_doubanmovie/action/AppActions.dart';
+import 'package:flutter_doubanmovie/state/AppState.dart';
+import 'package:flutter_doubanmovie/ui/hot/HotMoviesListWidget.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:redux/redux.dart';
 
 class HotWidget extends StatefulWidget{
   @override
@@ -11,54 +15,75 @@ class HotWidget extends StatefulWidget{
 }
 
 class HotWidgetState extends State<HotWidget>{
-  //  当前城市
-  String curCity;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initData();
+    // initData();
   }
 
-  void initData() async{
-    final prefs = await SharedPreferences.getInstance();
-    String city = prefs.getString('curCity');
-    if (city != null && city.isNotEmpty) {
-      setState((){
-        curCity = city;
-      });
-    } else {
-      setState((){
-        curCity = '上海';
-      });
-    }
-  }
+  // void initData() async{
+  //   final prefs = await SharedPreferences.getInstance();
+  //   String city = prefs.getString('curCity');
+  //   if (city != null && city.isNotEmpty) {
+  //     setState((){
+  //       curCity = city;
+  //     });
+  //   } else {
+  //     setState((){
+  //       curCity = '上海';
+  //     });
+  //   }
+  // }
 
-  void _jump2CitysWidget() async{
+  void _jump2CitysWidget(Store<AppState> state,String curCity) async{
     var selectCity = await Navigator.pushNamed(context, '/Citys', arguments: curCity);
     if (selectCity == null){
       return;
     }
-    setState(() {
-      curCity = selectCity;
-    });
-    
+
     // 保存数据
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('curCity', selectCity);
+
+    state.dispatch(ChangeCityAction(selectCity));
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    if (curCity == null || curCity.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+    // return StoreConnector<CityState, String>(
+    //   converter: (store){
+    //     String curCity = store.state.curCity;
+    //     if (curCity == null) {
+    //       //如果 curCity 为 null，说明没有初始化，则触发初始化
+    //       store.dispatch(InitCityAction(null));
+    //     }
+    //     return curCity;
+    //   },
+    //   builder: (context, curCity){
 
-    return SafeArea(
+    //   },
+    // );
+
+    return StoreBuilder<AppState>(
+      builder: (context, store){
+        String curCity = store.state.cityState.curCity;
+        if (curCity == null || curCity.isEmpty) {
+          store.dispatch(InitAction());
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }else{
+          return creatMainWidget(store,curCity);
+        }
+      },
+    );
+  }
+
+  Widget creatMainWidget(Store<AppState> state,String curCity){
+      return SafeArea(
       child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -72,7 +97,7 @@ class HotWidgetState extends State<HotWidget>{
             GestureDetector(
               child: Text(curCity,style: TextStyle(fontSize: 16),),
               onTap: (){
-                _jump2CitysWidget();
+                _jump2CitysWidget(state,curCity);
               },
             ),
             Icon(Icons.arrow_drop_down),

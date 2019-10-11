@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_doubanmovie/hot/CitysWidget.dart';
-import 'package:flutter_doubanmovie/hot/HotWidget.dart';
-import 'package:flutter_doubanmovie/mine/MineWidget.dart';
-import 'package:flutter_doubanmovie/find/MoviesWidget.dart';
+import 'package:flutter_doubanmovie/middlewares/AppMiddlewares.dart';
+import 'package:flutter_doubanmovie/reducer/AppReducer.dart';
+import 'package:flutter_doubanmovie/state/AppState.dart';
+import 'package:flutter_doubanmovie/ui/hot/CitysWidget.dart';
+import 'package:flutter_doubanmovie/ui/hot/HotWidget.dart';
+import 'package:flutter_doubanmovie/ui/mine/MineWidget.dart';
+import 'package:flutter_doubanmovie/ui/find/MoviesWidget.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +33,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -39,6 +45,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  final _appStore = Store<AppState>(
+    appReducer,
+    initialState: AppState(CityState(null), HotMovieState(null, null)),
+    middleware: [appMiddlewares]
+  );
+
   int _selectedIndex = 0;
   final _widgetItems = [HotWidget(), MoviesWidget(), MineWidget()];
 
@@ -46,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Center(
+      body: StoreProvider<AppState>(
+        store: _appStore,
         child: _widgetItems[_selectedIndex],
       ),
 
